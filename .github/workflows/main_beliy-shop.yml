@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'beliy-shop'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_07FF4D34AA0C449797A5D8D16B1812C9 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1E5BDDDAED294DA7B16F952481274502 }}
           package: .
