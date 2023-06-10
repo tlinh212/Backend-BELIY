@@ -30,7 +30,7 @@ namespace WEB_BELIY_API.MODEL
 
         public double SaleRate { get; set; }
 
-       // public virtual ICollection<Image> Images { get; set; }
+        //public virtual ICollection<Image> Images { get; set; }
        // public virtual ICollection<ProductDetail> ProductDetails { get; set; }
        
     }

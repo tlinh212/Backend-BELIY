@@ -52,7 +52,6 @@ namespace WEB_BELIY_API.Controllers
                 return NotFound();
             }
         }
-
         [HttpPost]
         public IActionResult Create(string Name, int IDParent)
         {
@@ -71,24 +70,20 @@ namespace WEB_BELIY_API.Controllers
                 Data = Category,
             });
         }
-        [HttpPut("{id}")]
-        public IActionResult Edit(int id, Category CategoryEdit)
+        [HttpPut]
+        public IActionResult Edit(Category CategoryEdit)
         {
             try
             {
-                var Category = Context.Categories.SingleOrDefault(c => c.IDCat == id);
+                var Category = Context.Categories.SingleOrDefault(c => c.IDCat == CategoryEdit.IDCat);
                 if
                     (Category == null)
                 {
                     return NotFound();
                 }
                
-                if (id != Category.IDCat)
-                {
-                    return BadRequest();
-                }
-
                 Category.Name = Category.Name;
+
                 Category.IDParent = Category.IDParent;
 
                 return Ok();

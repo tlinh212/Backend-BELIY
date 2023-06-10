@@ -30,6 +30,8 @@ namespace WEB_BELIY_API.MODEL
         [MaxLength(10)]
         public string PhoneNumber { get; set; }
 
+        public string Address { get; set; }
+
         public static string HashPassword(string Password)
         {
             byte[] salt;

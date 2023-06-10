@@ -71,12 +71,12 @@ namespace WEB_BELIY_API.Controllers
                 return BadRequest();
             }
         }
-        [HttpPut("{id}")]
-        public IActionResult Edit(string id, Stock stockEdit)
+        [HttpPut]
+        public IActionResult Edit(Stock stockEdit)
         {
             try
             {
-                var st = Context.Stocks.SingleOrDefault(s => s.IDStock == Guid.Parse(id));
+                var st = Context.Stocks.SingleOrDefault(s => s.IDStock == stockEdit.IDStock);
                 
                 if (st == null)
                 {

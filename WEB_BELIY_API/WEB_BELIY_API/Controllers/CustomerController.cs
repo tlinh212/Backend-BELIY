@@ -17,23 +17,29 @@ namespace WEB_BELIY_API.Controllers
         }
         [HttpGet]
         public IActionResult GetAll()
-        {
+        {   
             var ListCustomer = Context.Customers.ToList();
 
             return Ok(ListCustomer);
         }
 
         [HttpPost("login")]
-        public IActionResult Login(string UserName, string Password)
+        public IActionResult Login(Customer customer)
         {
             var Cus = Context.Customers.SingleOrDefault(c =>
-            c.Email.Equals(UserName) == true);
+            c.Email.Equals(customer.Email) == true);
 
             if (Cus != null)
             {
-                if (Customer.VerifyPassword(Cus.Password, UserName + Password) == true)
+                if (Customer.VerifyPassword(Cus.Password, customer.Email + customer.Password) == true)
                 {
-                    return Ok(Cus);
+                    return Ok( new {
+                        IDCus = Cus.IDCus,    
+                        Name = Cus.Name,
+                        Email = Cus.Email,
+                        Phone = Cus.PhoneNumber,
+                        Address = Cus.Address
+                    });
                 }
                 else
                 {

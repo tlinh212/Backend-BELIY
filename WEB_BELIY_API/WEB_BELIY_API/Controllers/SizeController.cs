@@ -60,12 +60,12 @@ namespace WEB_BELIY_API.Controllers
                 Data = Size,
             });
         }
-        [HttpPut("{id}")]
-        public IActionResult Edit(string id, Size size)
+        [HttpPut]
+        public IActionResult Edit(Size size)
         {
             try
             {
-                var Size = Context.Sizes.SingleOrDefault(s=>s.IDSize == Guid.Parse(id));
+                var Size = Context.Sizes.SingleOrDefault(s=>s.IDSize == size.IDSize);
                 
                 if(Size == null)
                 {

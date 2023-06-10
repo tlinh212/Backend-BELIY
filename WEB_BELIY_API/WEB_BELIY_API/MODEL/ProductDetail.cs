@@ -17,7 +17,7 @@ namespace WEB_BELIY_API.MODEL
 
         [ForeignKey("IDPro")]
         public virtual Product Product { get; set; }
-
+        
         [Display(Name = "Size")]
         public Guid IDSize { get; set; }
 

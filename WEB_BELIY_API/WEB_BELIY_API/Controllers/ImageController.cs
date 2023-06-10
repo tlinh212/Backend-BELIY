@@ -39,15 +39,15 @@ namespace WEB_BELIY_API.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Create(Guid IDPro, string LinkImage)
+        public IActionResult Create(Image image)
         {
             try
             {
                 var Image = new Image
                 {
                     IDImage = Guid.NewGuid(),
-                    IDPro = IDPro,                  
-                    LinkImage = LinkImage,
+                    IDPro = image.IDPro,                  
+                    LinkImage = image.LinkImage,
                 };
 
                 Context.Images.Add(Image);
@@ -56,7 +56,6 @@ namespace WEB_BELIY_API.Controllers
                 return Ok(new
                 {
                     Success = true,
-                    Data = Image,
                 });
 
             }
@@ -66,12 +65,12 @@ namespace WEB_BELIY_API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Edit(string id, Image ImageEdit)
+        [HttpPut]
+        public IActionResult Edit(Image ImageEdit)
         {
             try
             {
-                var image = Context.Images.SingleOrDefault(i => i.IDImage == Guid.Parse(id));
+                var image = Context.Images.SingleOrDefault(i => i.IDImage == ImageEdit.IDImage);
 
                 if (image == null)
                 {

@@ -94,21 +94,16 @@ namespace WEB_BELIY_API.Controllers
 
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Edit(string id, Product productedit)
+        [HttpPut()]
+        public IActionResult Edit(Product productedit)
         {
             try
             {
-                var product = Context.Products.SingleOrDefault(p => p.IDPro == Guid.Parse(id));
+                var product = Context.Products.SingleOrDefault(p => p.IDPro == productedit.IDPro);
                 
                 if (product == null)
                 {
                     return NotFound();
-                }
-
-                if (id != product.IDPro.ToString())
-                {
-                    return BadRequest();
                 }
 
                 product.NamePro = productedit.NamePro;
