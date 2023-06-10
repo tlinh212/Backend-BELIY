@@ -25,8 +25,8 @@ namespace WEB_BELIY_API.MODEL
         public virtual Stock Stock { get; set; }
         public int Quantity { get; set; }
 
-        public virtual ICollection<ImportDetail> ImportDetails { get; set; }
+        //public virtual ICollection<ImportDetail> ImportDetails { get; set; }
 
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        //public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }   
 }

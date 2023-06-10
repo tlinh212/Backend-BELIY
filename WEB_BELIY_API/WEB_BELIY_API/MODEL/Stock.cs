@@ -19,6 +19,6 @@ namespace WEB_BELIY_API.MODEL
         [Required]
         public string Address { get; set; }
 
-        public virtual ICollection<ProductStock> ProductStocks { get; set; }
+        //public virtual ICollection<ProductStock> ProductStocks { get; set; }
     }
 }

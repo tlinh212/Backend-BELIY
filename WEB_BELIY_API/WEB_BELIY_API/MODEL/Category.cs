@@ -18,7 +18,5 @@ namespace WEB_BELIY_API.MODEL
         [MaxLength(100)]
         public string Name { get; set;  }
         public int IDParent { get; set; }
-
-        public virtual ICollection<Product> Products { get; set; }
     }
 }

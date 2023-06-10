@@ -9,7 +9,7 @@ using WEB_BELIY_API.DATA;
 
 namespace WEB_BELIY_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("image")]
     [ApiController]
     public class ImageController : ControllerBase
     {
@@ -18,8 +18,8 @@ namespace WEB_BELIY_API.Controllers
         {
             Context = context;
         }
-        [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        [HttpGet("idpro/{id}")]
+        public IActionResult GetByProductId(Guid id)
         {
             try
             {

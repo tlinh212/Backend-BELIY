@@ -17,7 +17,5 @@ namespace WEB_BELIY_API.MODEL
 
         public DateTime DateImport { get; set; }
 
-        public virtual ICollection<ImportDetail> ImportDetails { get; set; }
-
     }
 }

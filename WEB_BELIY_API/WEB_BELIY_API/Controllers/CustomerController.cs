@@ -6,7 +6,7 @@ using WEB_BELIY_API.MODEL;
 
 namespace WEB_BELIY_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("customer")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -22,24 +22,8 @@ namespace WEB_BELIY_API.Controllers
 
             return Ok(ListCustomer);
         }
-        [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
-        {
-            var Customer = Context.Customers.SingleOrDefault(c =>
-            c.IdCus == id);
-            if (Customer != null)
-            {
-                return Ok(Customer);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
 
-        
-
-        [HttpGet("{UserName},{Password}")]
+        [HttpPost("login")]
         public IActionResult Login(string UserName, string Password)
         {
             var Cus = Context.Customers.SingleOrDefault(c =>
@@ -47,26 +31,25 @@ namespace WEB_BELIY_API.Controllers
 
             if (Cus != null)
             {
-                if(Customer.VerifyPassword(Cus.Password, UserName+Password) == true)
+                if (Customer.VerifyPassword(Cus.Password, UserName + Password) == true)
                 {
                     return Ok(Cus);
-                }    
+                }
                 else
                 {
                     return NotFound();
-                }    
+                }
             }
             else
             {
                 return NotFound();
             }
         }
-        [HttpPost]
-        public IActionResult Register(string Name, string Email, string Password, string PhoneNumber)
+        [HttpPost("register")]
+        public IActionResult Register(Customer customer)
         {
-
             var Cus = Context.Customers.SingleOrDefault(c =>
-            c.Email.Equals(Email) == true);
+            c.Email.Equals(customer.Email) == true);
 
             if (Cus != null)
             {
@@ -76,16 +59,16 @@ namespace WEB_BELIY_API.Controllers
                 });
             }
 
-            string HashPassword = Customer.HashPassword(Email + Password);
+            string HashPassword = Customer.HashPassword(customer.Email + customer.Password);
 
             var cus = new Customer
             {
-                IdCus = Guid.NewGuid(),
-                Name = Name,
-                Email = Email,
-                Password = HashPassword, 
-                PhoneNumber = PhoneNumber, 
-                
+                IDCus = Guid.NewGuid(),
+                Name = customer.Name,
+                Email = customer.Email,
+                Password = HashPassword,
+                PhoneNumber = customer.PhoneNumber,
+
             };
 
             Context.Customers.Add(cus);
@@ -94,9 +77,7 @@ namespace WEB_BELIY_API.Controllers
             return Ok(new
             {
                 Success = true,
-                Data = cus,
             });
-
         }
     }
 }

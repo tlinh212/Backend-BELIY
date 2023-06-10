@@ -9,7 +9,7 @@ using WEB_BELIY_API.DATA;
 
 namespace WEB_BELIY_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("product")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -23,15 +23,15 @@ namespace WEB_BELIY_API.Controllers
         {
             var ListProduct = Context.Products.ToList();
 
-            return Ok(ListProduct);            
+            return Ok(ListProduct);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GeById( Guid id )
+        public IActionResult GetById(Guid id)
         {
             try
             {
-                var Product = Context.Products.SingleOrDefault(p =>p.IDPro == id);
+                var Product = Context.Products.SingleOrDefault(p => p.IDPro == id);
                 if (Product != null)
                 {
                     return Ok(Product);
@@ -43,63 +43,82 @@ namespace WEB_BELIY_API.Controllers
             }
             catch
             {
-                return BadRequest(); 
+                return BadRequest();
             }
         }
-        [HttpPost]
-        public IActionResult Create(string NamePro, int IDCat, string IDImp, double Price, int Quantity, string Description, double Discount, double SaleRate)
+
+        [HttpGet("cat/{id}")]
+        public IActionResult GetByIdCat(int id)
         {
-            var Product = new Product
+            try
+            {
+                var Product = Context.Products.Where(p => p.IDCat == id).ToList();
+
+                if (Product != null)
+                {
+                    return Ok(Product);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Create(Product product)
+        {
+            var productAdd = new Product
             {
                 IDPro = Guid.NewGuid(),
-                NamePro = NamePro,
-                IDCat = IDCat,
-                IDImp = Guid.Parse(IDImp),            
-                Price = Price,
-                Quantity = Quantity,
-                Description = Description,
-                Discount = Discount,
-                SaleRate = SaleRate
-
+                NamePro = product.NamePro,
+                IDCat = product.IDCat,
+                Price = product.Price,
+                Description = product.Description,
+                Discount = product.Discount,
+                SaleRate = product.SaleRate,
             };
 
-            Context.Products.Add(Product);
+            Context.Products.Add(productAdd);
             Context.SaveChanges();
 
             return Ok(new
             {
                 Success = true,
-                Data = Product,
+                Data = productAdd,
             });
 
         }
-       
+
         [HttpPut("{id}")]
-        public IActionResult Edit(string id, Product productedit  )
+        public IActionResult Edit(string id, Product productedit)
         {
             try
             {
-                var product = Context.Products.SingleOrDefault(pp => pp.IDPro == Guid.Parse(id));
+                var product = Context.Products.SingleOrDefault(p => p.IDPro == Guid.Parse(id));
+                
                 if (product == null)
                 {
                     return NotFound();
                 }
-                /////update 
-                if (id !=product.IDPro.ToString())
+
+                if (id != product.IDPro.ToString())
                 {
                     return BadRequest();
                 }
-          
-                product.NamePro = product.NamePro;
-                product.IDCat = product.IDCat;
-                product.IDImp = product.IDImp;                
-                product.Price = product.Price;
-                product.Quantity = product.Quantity;
-                product.Description = product.Description;
-                product.Discount = product.Discount;
-                product.SaleRate = product.SaleRate;
 
-                return Ok(productedit);
+                product.NamePro = productedit.NamePro;
+                product.IDCat = productedit.IDCat;
+                product.Price = productedit.Price;
+                product.Description = productedit.Description;
+                product.Discount = productedit.Discount;
+                product.SaleRate = productedit.SaleRate;
+
+                return Ok();
             }
             catch
             {

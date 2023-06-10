@@ -9,7 +9,7 @@ using WEB_BELIY_API.DATA;
 
 namespace WEB_BELIY_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("imp")]
     [ApiController]
     public class ImportBillController : ControllerBase
     {
@@ -30,11 +30,12 @@ namespace WEB_BELIY_API.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GeById(Guid id)
+        public IActionResult GetById(string id)
         {
             try
             {
-                var ImportBill = Context.ImportBills.SingleOrDefault(i => i.IDImp == id);
+                var ImportBill = Context.ImportBills.SingleOrDefault(i => i.IDImp == Guid.Parse(id));
+                
                 if (ImportBill != null)
                 {
                     return Ok(ImportBill);
@@ -50,19 +51,16 @@ namespace WEB_BELIY_API.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Create(string IDSupp, string IDWare, double Price, int Quantity, double TotalMoney, DateTime DateImport)
+        public IActionResult Create(ImportBill import)
         {
             try
             {
                 var ImportBill = new ImportBill
                 {
                     IDImp = Guid.NewGuid(),
-                    IDSupp = Guid.Parse(IDSupp),
-                    IDWare = Guid.Parse(IDWare),
-                    Price = Price,
-                    Quantity = Quantity,
-                    TotalMoney = TotalMoney,
-                    DateImport = DateImport
+                    NameSupplier = import.NameSupplier,
+                    TotalMoney = 0,
+                    DateImport = import.DateImport
 
                 };
 
@@ -78,33 +76,26 @@ namespace WEB_BELIY_API.Controllers
             catch
             {
                 return BadRequest();
-            } 
-            
-
+            }
         }
 
         [HttpPut("{id}")]
-        public IActionResult Edit(string id, ImportBill importbilledit)
+        public IActionResult Edit(string id, ImportBill importBillEdit)
         {
             try
             {
-                var importbill = Context.ImportBills.SingleOrDefault( i=>i.IDImp == Guid.Parse(id));
+                var importbill = Context.ImportBills.SingleOrDefault(i => i.IDImp == Guid.Parse(id));
+                
                 if (importbill == null)
                 {
                     return NotFound();
                 }
-                /////update 
-                if (id != importbill.IDImp.ToString())
-                {
-                    return BadRequest();
-                }
 
-                importbill.IDSupp = importbill.IDSupp;
-                importbill.IDWare = importbill.IDWare;
-                importbill.Price = importbill.Price;
-                importbill.Quantity = importbill.Quantity;
-                importbill.TotalMoney = importbill.TotalMoney;
-                importbill.DateImport = importbill.DateImport;
+                importbill.NameSupplier = importBillEdit.NameSupplier;
+                importbill.TotalMoney = importBillEdit.TotalMoney;
+                importbill.DateImport = importBillEdit.DateImport;
+
+                Context.SaveChanges();
 
                 return Ok(importbill);
             }

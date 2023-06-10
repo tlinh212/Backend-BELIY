@@ -17,7 +17,7 @@ namespace WEB_BELIY_API.MODEL
 
         public string Description { get; set; }
 
-        public virtual ICollection<ProductDetail> ProductDetails { get; set; }
+       // public virtual ICollection<ProductDetail> ProductDetails { get; set; }
 
     }
 }

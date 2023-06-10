@@ -9,7 +9,7 @@ using WEB_BELIY_API.MODEL;
 
 namespace WEB_BELIY_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("category")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -39,7 +39,20 @@ namespace WEB_BELIY_API.Controllers
                 return NotFound();
             }
         }
-       
+        [HttpGet("parent/{id}")]
+        public IActionResult GetByIdParent(int id)
+        {
+            var Category = Context.Categories.Where(p => p.IDParent == id).ToList();
+            if (Category != null)
+            {
+                return Ok(Category);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost]
         public IActionResult Create(string Name, int IDParent)
         {
