@@ -10,7 +10,7 @@ namespace WEB_BELIY_API.MODEL
     public class Image
     {
         [Key]
-         public Guid IDImage { get; set; }
+        public Guid IDImage { get; set; }
 
         [Required]
         [Display(Name = "IDPro")]

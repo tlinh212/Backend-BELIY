@@ -7,21 +7,18 @@ using System.Threading.Tasks;
 
 namespace WEB_BELIY_API.MODEL
 {
-    public class Supplier
+    public class Stock
     {
         [Key]
-        public Guid IDSupp { get; set; }
+        public Guid IDStock { get; set;  }
 
         [Required]
         [MaxLength(100)]
-        public string NameSupp { get; set; }
-         
+        public string Name { get; set; }
+
         [Required]
-        [MaxLength(100)]
-        public string ProductType{ get; set; }
+        public string Address { get; set; }
 
-        public virtual ICollection<ImportBill> ImportBills { get; set; }
-
+        public virtual ICollection<ProductStock> ProductStocks { get; set; }
     }
 }
-
