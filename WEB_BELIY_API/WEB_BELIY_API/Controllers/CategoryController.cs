@@ -52,32 +52,32 @@ namespace WEB_BELIY_API.Controllers
                 return NotFound();
             }
         }
-        [HttpPost]
-        public IActionResult Create(string Name, int IDParent)
+        [HttpPost("create")]
+        public IActionResult Create(Category cate)
         {
             var Category = new Category
             {
-                Name = Name,
-                IDParent = IDParent,
+                Name = cate.Name,
+                IDParent = cate.IDParent,
             };
 
             Context.Categories.Add(Category);
+
             Context.SaveChanges();
 
             return Ok(new
             {
                 Success = true,
-                Data = Category,
             });
         }
-        [HttpPut]
+        [HttpPut("update")]
         public IActionResult Edit(Category CategoryEdit)
         {
             try
             {
                 var Category = Context.Categories.SingleOrDefault(c => c.IDCat == CategoryEdit.IDCat);
-                if
-                    (Category == null)
+                
+                if(Category == null)
                 {
                     return NotFound();
                 }
@@ -85,6 +85,10 @@ namespace WEB_BELIY_API.Controllers
                 Category.Name = Category.Name;
 
                 Category.IDParent = Category.IDParent;
+
+                Context.Update(Category);
+
+                Context.SaveChanges();
 
                 return Ok();
             }

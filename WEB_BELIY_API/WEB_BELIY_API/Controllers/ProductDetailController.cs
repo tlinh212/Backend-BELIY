@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WEB_BELIY_API.DATA;
+using WEB_BELIY_API.MODEL;
 
 namespace WEB_BELIY_API.Controllers
 {
@@ -46,6 +47,23 @@ namespace WEB_BELIY_API.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult Create(ProductDetail productDetail)
+        {
+            var productAdd = new ProductDetail
+            {
+                IDProDetail = Guid.NewGuid(),
+                IDPro = productDetail.IDPro,
+                IDSize = productDetail.IDSize,
+            };
 
+            Context.ProductDetails.Add(productAdd);
+            Context.SaveChanges();
+
+            return Ok(new
+            {
+                Success = true,
+            });
+        }
     }
 }
