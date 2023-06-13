@@ -26,7 +26,7 @@ namespace WEB_BELIY_API.DATA
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
-
+        public DbSet<Review> Reviews { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -23,15 +23,17 @@ namespace WEB_BELIY_API.MODEL
         public virtual Category Category { get; set; }
 
         public double Price { get; set; }
-    
-        public string Description  { get; set; }
+
+        public string Description { get; set; }
 
         public double Discount { get; set; }
 
         public double SaleRate { get; set; }
 
+        public ICollection<Review> Reviews { get; set; }
+
         //public virtual ICollection<Image> Images { get; set; }
-       // public virtual ICollection<ProductDetail> ProductDetails { get; set; }
-       
+        // public virtual ICollection<ProductDetail> ProductDetails { get; set; }
+
     }
 }

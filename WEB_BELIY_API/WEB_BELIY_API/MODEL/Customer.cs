@@ -13,11 +13,6 @@ namespace WEB_BELIY_API.MODEL
     {
         [Key]
         public Guid IDCus { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string Name { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string Email { get; set; }
@@ -27,10 +22,8 @@ namespace WEB_BELIY_API.MODEL
         public string Password { get; set; }
 
         [Required]
-        [MaxLength(10)]
-        public string PhoneNumber { get; set; }
-
-        public string Address { get; set; }
+        [MaxLength(100)]
+        public string Username { get; set; }
 
         public static string HashPassword(string Password)
         {

@@ -45,19 +45,33 @@ namespace WEB_BELIY_API.Controllers
                 }
 
                 Category category = Context.Categories.Where(c => c.IDCat == listProduct[i].IDCat).FirstOrDefault();
-                Category parentCate = Context.Categories.Where(c => c.IDCat == category.IDParent).FirstOrDefault();
-
-                list.Add(new { 
-                    product = listProduct[i],
-                    sizes = listSize,
-                    category = new
+                if (category == null)
+                {
+                    list.Add(new
                     {
-                        idCat = category.IDCat,
-                        nameCat = category.Name,
-                        Gender = parentCate.Name
-                    },
-                    images = listUrl,
-                });
+                        product = listProduct[i],
+                        sizes = listSize,
+                        category = 0,
+                        images = listUrl,
+                    });
+                }
+                else
+                {
+                    Category parentCate = Context.Categories.Where(c => c.IDCat == category.IDParent).FirstOrDefault();
+
+                    list.Add(new
+                    {
+                        product = listProduct[i],
+                        sizes = listSize,
+                        category = new
+                        {
+                            idCat = category.IDCat,
+                            nameCat = category.Name,
+                            Gender = parentCate.Name
+                        },
+                        images = listUrl,
+                    });
+                }
             }    
 
             return Ok(list);
@@ -72,6 +86,7 @@ namespace WEB_BELIY_API.Controllers
                 if (Product != null)
                 {
                     List<Image> listImage = Context.Images.Where(img => img.IDPro == Product.IDPro).ToList();
+                    List<Review> reviews = Context.Reviews.Where(r => r.IDPro == Product.IDPro).ToList();
                     List<String> listUrl = new List<String>();
                     for (int j = 0; j < listImage.Count; j++)
                     {
@@ -90,20 +105,37 @@ namespace WEB_BELIY_API.Controllers
                     }
 
                     Category category = Context.Categories.Where(c => c.IDCat == Product.IDCat).FirstOrDefault();
-                    Category parentCate = Context.Categories.Where(c => c.IDCat == category.IDParent).FirstOrDefault();
-
-                    return Ok(new
+                    
+                    if (category == null)
                     {
-                        product = Product,
-                        sizes = listSize,
-                        category = new
+                        return Ok(new
                         {
-                            idCat = category.IDCat,
-                            nameCat = category.Name,
-                            Gender = parentCate.Name
-                        },
-                        images = listUrl,
-                    });
+                            product = Product,
+                            sizes = listSize,
+                            category = 0,
+                            images = listUrl,
+                            reviews = reviews
+                        });
+                    }
+                    else
+                    {
+                        Category parentCate = Context.Categories.Where(c => c.IDCat == category.IDParent).FirstOrDefault();
+
+                        return Ok(new
+                        {
+                            product = Product,
+                            sizes = listSize,
+                            category = new
+                            {
+                                idCat = category.IDCat,
+                                nameCat = category.Name,
+                                Gender = parentCate.Name
+                            },
+                            images = listUrl,
+                            reviews = reviews
+                        });
+                    }
+                   
                 }
                 else
                 {
@@ -241,28 +273,73 @@ namespace WEB_BELIY_API.Controllers
             }
         }
 
-        [HttpPost("create")]
-        public IActionResult Create(Product product)
+        public class AddProduct
         {
-            var productAdd = new Product
-            {
-                IDPro = Guid.NewGuid(),
-                NamePro = product.NamePro,
-                IDCat = product.IDCat,
-                Price = product.Price,
-                Description = product.Description,
-                Discount = product.Discount,
-                SaleRate = product.SaleRate,
-            };
+            public string NamePro { get; set; }
 
-            Context.Products.Add(productAdd);
-            Context.SaveChanges();
+            public int IDCat { get; set; }
 
-            return Ok(new
+            public double Price { get; set; }
+
+            public string Description { get; set; }
+
+            public double Discount { get; set; }
+
+            public double SaleRate { get; set;}
+
+            public List<Guid> Sizes { get; set; }
+
+            public List<string> Images { get; set; }
+
+        }
+
+        [HttpPost("create")]
+        public IActionResult Create(AddProduct product)
+        {
+            try
             {
-                Success = true,
-                Data = productAdd,
-            });
+                Guid Id = Guid.NewGuid();
+
+                var productAdd = new Product
+                {
+                    IDPro = Id,
+                    NamePro = product.NamePro,
+                    IDCat = product.IDCat,
+                    Price = product.Price,
+                    Description = product.Description,
+                    Discount = product.Discount,
+                    SaleRate = product.SaleRate,
+                };
+
+                Context.Products.Add(productAdd);
+
+                for (int i = 0; i < product.Images.Count; i++)
+                {
+                    Context.Images.Add(new Image
+                    {
+                        IDImage = Guid.NewGuid(),
+                        IDPro = Id,
+                        LinkImage = product.Images[i]
+                    });
+                }
+                for (int i = 0; i < product.Sizes.Count; i++)
+                {
+                    Context.ProductDetails.Add(new ProductDetail
+                    {
+                        IDProDetail = new Guid(),
+                        IDPro = Id,
+                        IDSize = product.Sizes[i]
+                    });
+                }
+
+                Context.SaveChanges();
+
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
 
         }
 
@@ -293,7 +370,52 @@ namespace WEB_BELIY_API.Controllers
             }
 
         }
+        public class ReviewDTO
+        {
+            public Review review { get; set; }
+        }
+        [HttpPut("ratting")]
+        
+        public IActionResult AddRatting(ReviewDTO dto)
+        {
+            try
+            {
 
+
+                var review = Context.Reviews.SingleOrDefault(p => p.IDPro == dto.review.IDPro);
+
+
+
+
+
+                if (review == null)
+                {
+                    Context.Reviews.Add(dto.review);
+                    Context.SaveChanges();
+                    return Ok(new { message = "Đánh giá của bạn đã được gửi đến Beliy" });
+
+                }
+                else
+                {
+                    review.ratting = dto.review.ratting;
+                    Context.SaveChanges();
+                    return Ok(new { message = "Đánh giá của bạn đã được cập nhật" });
+
+                }
+
+
+
+
+
+
+
+
+            } catch
+            {
+                return BadRequest();
+            } 
+
+        }
         public class CheckProductQuantity
         {
             public string IDPro { get; set; }

@@ -98,6 +98,28 @@ namespace WEB_BELIY_API.Controllers
             }
 
         }
+
+        [HttpDelete("delete/{id}")]
+        public IActionResult Delete(int id)
+        {
+            var cat = Context.Categories.Where(c => c.IDCat == id).FirstOrDefault();
+            if (cat == null || cat.IDParent == 0)
+            {
+                return NotFound();
+            }
+            
+            var listProduct = Context.Products.Where(p => p.IDCat == id).ToList();
+            for(int i = 0; i < listProduct.Count;i++)
+            {
+                listProduct[i].IDCat = 0;
+                Context.Products.Update(listProduct[i]);
+                Context.SaveChanges();
+            }
+            Context.Categories.Remove(cat);
+            Context.SaveChanges();
+
+            return Ok();
+        }
     }
 }
 

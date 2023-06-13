@@ -22,23 +22,26 @@ namespace WEB_BELIY_API.Controllers
 
             return Ok(ListCustomer);
         }
-
+        public class LoginForm
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
+        }
         [HttpPost("login")]
-        public IActionResult Login(Customer customer)
+        public IActionResult Login(LoginForm customer)
         {
             var Cus = Context.Customers.SingleOrDefault(c =>
-            c.Email.Equals(customer.Email) == true);
+            c.Username.Equals(customer.Username) == true);
 
             if (Cus != null)
             {
-                if (Customer.VerifyPassword(Cus.Password, customer.Email + customer.Password) == true)
+                if (Customer.VerifyPassword(Cus.Password, customer.Username + customer.Password) == true)
                 {
                     return Ok( new {
-                        IDCus = Cus.IDCus,    
-                        Name = Cus.Name,
+                        IDCus = Cus.IDCus,
+                        Username = Cus.Username,
                         Email = Cus.Email,
-                        Phone = Cus.PhoneNumber,
-                        Address = Cus.Address
+                     
                     });
                 }
                 else
@@ -55,28 +58,27 @@ namespace WEB_BELIY_API.Controllers
         public IActionResult Register(Customer customer)
         {
             var Cus = Context.Customers.SingleOrDefault(c =>
-            c.Email.Equals(customer.Email) == true);
+            c.Username.Equals(customer.Username) == true);
 
             if (Cus != null)
             {
                 return BadRequest(new
                 {
-                    Data = "Email is exists",
+                    Data = "Username is exists",
                 });
             }
 
-            string HashPassword = Customer.HashPassword(customer.Email + customer.Password);
+            string HashPassword = Customer.HashPassword(customer.Username + customer.Password);
 
             var cus = new Customer
             {
                 IDCus = Guid.NewGuid(),
-                Name = customer.Name,
+                Username = customer.Username,
                 Email = customer.Email,
                 Password = HashPassword,
-                PhoneNumber = customer.PhoneNumber,
 
             };
-
+                
             Context.Customers.Add(cus);
             Context.SaveChanges();
 
@@ -84,6 +86,22 @@ namespace WEB_BELIY_API.Controllers
             {
                 Success = true,
             });
+        }
+
+        [HttpDelete("delete/{id}")]
+        public IActionResult Delete(string id)
+        {
+            var cus = Context.Customers.Where(c=>c.IDCus == Guid.Parse(id)).FirstOrDefault();
+            if (cus == null)
+            {
+                return NotFound();
+            }
+
+            Context.Customers.Remove(cus);
+
+            Context.SaveChanges();
+
+            return Ok();
         }
     }
 }

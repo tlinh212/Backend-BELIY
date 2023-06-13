@@ -10,16 +10,15 @@ namespace WEB_BELIY_API.MODEL
     {
         [Key]      
         public Guid IDEmp { get; set; }
-        [Required]
         [MaxLength(255)]
         public string Name { get; set; }
-        public DateTime Birthday { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
         [MaxLength(10)]
         public string Phone { get; set; }
-        [MaxLength(10)]
-        public string Sex { get; set; }
-        public DateTime WorkedDate { get; set; }
+        public string Role { get; set; }
+
     }
 }
