@@ -39,13 +39,13 @@ namespace WEB_BELIY_API.Controllers
         {
             try
             {
-                Employee employee = Context.Employees.Where(e => e.UserName == Emp.UserName).FirstOrDefault();
+                Employee employee = Context.Employees.Where(e => e.Email == Emp.Email).FirstOrDefault();
                 
                 if(employee!=null)
                 {
                     return BadRequest(new
                     {
-                        Data = "Username is exists",
+                        Data = "Email is exists",
                     });
                 }
                 
@@ -89,7 +89,7 @@ namespace WEB_BELIY_API.Controllers
 
         public class LoginFormEmp
         {
-            public string Username { get; set; }
+            public string Email { get; set; }
             public string Password { get; set; }
         }
 
@@ -97,7 +97,7 @@ namespace WEB_BELIY_API.Controllers
         public IActionResult Login(LoginFormEmp Emp)
         {
             var employee = Context.Employees.SingleOrDefault(e =>
-            e.UserName.Equals(Emp.Username) == true);
+            e.Email.Equals(Emp.Email) == true);
 
             if (employee != null)
             {
@@ -106,7 +106,7 @@ namespace WEB_BELIY_API.Controllers
                     return Ok(new
                     {
                         IDEmp = employee.IDEmp,
-                        Username = employee.UserName,
+                        Username = employee.Email,
                         Email = employee.Email,
                         Role = employee.Role
                     });

@@ -148,6 +148,7 @@ namespace WEB_BELIY_API.Controllers
             }
         }
 
+
         [HttpGet("cat/{id}")]
         public IActionResult GetByIdCat(int id)
         {
@@ -275,6 +276,7 @@ namespace WEB_BELIY_API.Controllers
 
         public class AddProduct
         {
+            public Guid IDPro { get; set; }
             public string NamePro { get; set; }
 
             public int IDCat { get; set; }
@@ -293,6 +295,54 @@ namespace WEB_BELIY_API.Controllers
 
         }
 
+        public class UpdateImage
+        {
+            public Guid IDImg { get; set; }
+            public string Link { get; set; }
+        }
+
+        public class UpdateProduct
+        {
+            public Guid IDPro { get; set; }
+            public string NamePro { get; set; }
+
+            public int IDCat { get; set; }
+
+            public double Price { get; set; }
+
+            public string Description { get; set; }
+
+            public double Discount { get; set; }
+
+            public double SaleRate { get; set; }
+
+            public List<Guid> Sizes { get; set; }
+
+            public List<UpdateImage> Images { get; set; }
+
+        }
+        public class ImportProduct
+        {
+            public Guid IDPro { get; set; }
+            public Guid IDSize { get; set; }
+            public int Quantity { get; set; }
+        }
+        [HttpPost("import")]
+        public IActionResult Import(ImportProduct imp)
+        {
+            ProductDetail product = Context.ProductDetails.Where(p => p.IDPro == imp.IDPro && p.IDSize == imp.IDSize).FirstOrDefault();
+            
+            if (product == null)
+                return NotFound();
+
+            product.Quantity += imp.Quantity;
+
+            Context.ProductDetails.Update(product);
+
+            Context.SaveChanges();
+
+            return Ok();
+        }
         [HttpPost("create")]
         public IActionResult Create(AddProduct product)
         {
@@ -344,7 +394,7 @@ namespace WEB_BELIY_API.Controllers
         }
 
         [HttpPut("update")]
-        public IActionResult Edit(Product productedit)
+        public IActionResult Edit(UpdateProduct productedit)
         {
             try
             {
@@ -361,6 +411,15 @@ namespace WEB_BELIY_API.Controllers
                 product.Description = productedit.Description;
                 product.Discount = productedit.Discount;
                 product.SaleRate = productedit.SaleRate;
+
+                for (int i = 0; i < productedit.Images.Count; i++)
+                {
+                    Image image = Context.Images.Where(img => img.IDImage == productedit.Images[i].IDImg).FirstOrDefault();
+                    image.LinkImage = productedit.Images[i].Link;
+                    Context.Images.Update(image);
+                }
+
+                Context.SaveChanges();
 
                 return Ok();
             }
@@ -428,19 +487,10 @@ namespace WEB_BELIY_API.Controllers
                     return NotFound(Data.Orders[i]);
                 }    
 
-                List<ProductStock> listProStock = Context.ProductStocks.Where(p => p.IDProDetail == ProDetail.IDProDetail).ToList();
-                
-                int Quantity = 0;
-                
-                for (int k = 0; k < listProStock.Count; k++)
-                {
-                    Quantity += listProStock[k].Quantity;
-                }
-
-                if (Quantity < Data.Orders[i].QuantityOrder)
+                if (ProDetail.Quantity < Data.Orders[i].QuantityOrder)
                 {
                     Product product = Context.Products.Where(p => p.IDPro == Guid.Parse(Data.Orders[i].IDPro)).FirstOrDefault();
-                    String Error = "Sản phẩm "+ product.NamePro +" chỉ còn " + Quantity + " sản phẩm";
+                    String Error = "Sản phẩm "+ product.NamePro +" chỉ còn " + ProDetail.Quantity + " sản phẩm";
                     return Ok(Error);
                 }    
                    

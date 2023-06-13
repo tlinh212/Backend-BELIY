@@ -21,7 +21,7 @@ namespace WEB_BELIY_API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var ListCategory = Context.Categories.ToList();
+            var ListCategory = Context.Categories.Where(c=>c.IDParent!=0).ToList();
 
             return Ok(ListCategory);
         }

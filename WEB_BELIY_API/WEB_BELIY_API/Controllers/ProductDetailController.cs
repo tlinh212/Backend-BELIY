@@ -20,9 +20,66 @@ namespace WEB_BELIY_API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var ListProduct = Context.ProductDetails.ToList();
+            var listProduct = Context.ProductDetails.ToList();
 
-            return Ok(ListProduct);
+            if(listProduct==null)
+            {
+                return NotFound();
+            }    
+
+            List<Object> list = new List<Object>();
+
+            for (int i = 0; i < listProduct.Count; i++)
+            {
+                List<Image> listImage = Context.Images.Where(img => img.IDPro == listProduct[i].IDPro).ToList();
+                
+                List<String> listUrl = new List<String>();
+
+                for (int j = 0; j < listImage.Count; j++)
+                {
+                    listUrl.Add(listImage[j].LinkImage);
+                }
+
+                var product = Context.Products.Where(p => p.IDPro == listProduct[i].IDPro).FirstOrDefault();
+
+                var size = Context.Sizes.Where(s => s.IDSize == listProduct[i].IDSize).FirstOrDefault();
+
+                Category category = Context.Categories.Where(c => c.IDCat == product.IDCat).FirstOrDefault();
+                
+                if (category == null)
+                {
+                    list.Add(new
+                    {
+                        idDetail = listProduct[i].IDProDetail,
+                        product = product,
+                        size = size,
+                        category = 0,
+                        images = listUrl,
+                        quantity = listProduct[i].Quantity,
+                    });
+                }
+                else
+                {
+                    Category parentCate = Context.Categories.Where(c => c.IDCat == category.IDParent).FirstOrDefault();
+
+                    list.Add(new
+                    {
+                        idDetail = listProduct[i].IDProDetail,
+                        product = product,
+                        size = size,
+                        category = new
+                        {
+                            idCat = category.IDCat,
+                            nameCat = category.Name,
+                            Gender = parentCate.Name
+                        },
+                        images = listUrl,
+                        quantity = listProduct[i].Quantity,
+                    });
+                }
+            }
+
+            return Ok(list);
         }
 
         [HttpGet("{id}")]

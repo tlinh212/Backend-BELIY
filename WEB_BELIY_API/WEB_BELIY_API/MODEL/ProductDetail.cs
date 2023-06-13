@@ -24,6 +24,8 @@ namespace WEB_BELIY_API.MODEL
         [ForeignKey("IDSize")]
         public virtual Size Size { get; set; }
 
-       // public virtual ICollection<ProductStock> ProductStocks { get; set; }
+        public int Quantity { get; set; }
+
+        // public virtual ICollection<ProductStock> ProductStocks { get; set; }
     }
 }

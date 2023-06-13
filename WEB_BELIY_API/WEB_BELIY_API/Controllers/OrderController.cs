@@ -25,14 +25,61 @@ namespace WEB_BELIY_API.Controllers
             return Ok(orders);
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetById(Guid id)
+        {
+           try
+            {
+                Order ord = Context.Orders.Where(o => o.IdOrder == id).FirstOrDefault();
+                if (ord == null)
+                    return NotFound();
+                List<OrderDetail> list = Context.OrderDetails.Where(o => o.IDOrder == ord.IdOrder).ToList();
+                List<Object> listPro = new List<Object>();
+                for(int i = 0; i < list.Count;i++)
+                {
+                    ProductDetail pro = Context.ProductDetails.Where(p => p.IDProDetail == list[i].IDProDetail).FirstOrDefault();
+                    Product product = Context.Products.Where(p => p.IDPro == pro.IDPro).FirstOrDefault();
+                    Size s = Context.Sizes.Where(size => size.IDSize == pro.IDSize).FirstOrDefault();
+                    listPro.Add(new
+                    {
+                        Name = product.NamePro,
+                        Quantity = list[i].Quantity,
+                        Size = s.Name,
+                        Price = list[i].Price,
+                    });
+                }    
+                return Ok(new
+                {
+                    order = new
+                    {
+                        IdOrder = ord.IdOrder,
+                        OrderDate = ord.OrderDate,
+                        Status = ord.Status,
+                        PaymentMethod = ord.PaymentMethod,
+                        PaymentDate = ord.PaymentDate,
+                        TotalValue = ord.TotalValue,
+                        Phone = ord.Phone,
+                        Name = ord.Name,
+                        Email = ord.Email,
+                        IsCharge = ord.IsCharge,
+                        NameStock = ord.NameStock,
+                        DeliveryAddress = ord.DeliveryAddress,
+                    },
+                    products = listPro,
+                });
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
         public class AddProductOrder
         {
             public Guid IDPro { get; set; }
             public Guid IDSize { get; set; }
             public int QuantityOrder { get; set; }
             public int Price { get; set; }
-
-
         }
 
         public class AddOrder
@@ -86,6 +133,18 @@ namespace WEB_BELIY_API.Controllers
             }
             order.NameStock = dto.NameStock;
             Context.SaveChanges();
+            var listDetail = Context.OrderDetails.Where(o => o.IDOrder == dto.IDOrder).ToList();
+            for(int i = 0; i < listDetail.Count;i++)
+            {
+                var productDetail = Context.ProductDetails.Where(p => p.IDProDetail == listDetail[i].IDProDetail).FirstOrDefault();
+                if(productDetail==null)
+                {
+                    return NotFound();
+                }
+                productDetail.Quantity = productDetail.Quantity - listDetail[i].Quantity;
+                Context.ProductDetails.Update(productDetail);
+                Context.SaveChanges();
+            }    
             return Ok(new { message = "Đã chỉ định kho" });
         }
         [HttpPost("create")]
@@ -123,6 +182,25 @@ namespace WEB_BELIY_API.Controllers
             Context.Orders.Add(order);
 
             Context.SaveChanges();
+
+            for(int i = 0; i < AddOrder.Orders.Count;i++)
+            {
+                ProductDetail pro = Context.ProductDetails.Where(p => p.IDPro == AddOrder.Orders[i].IDPro && p.IDSize == AddOrder.Orders[i].IDSize).FirstOrDefault();
+                
+                Product product = Context.Products.Where(p => p.IDPro == AddOrder.Orders[i].IDPro).FirstOrDefault();
+                
+                OrderDetail ord = new OrderDetail
+                {
+                    IDOrder = Id,
+                    IDProDetail = pro.IDProDetail,
+                    Price = product.Price * ((100-product.Discount)/100),
+                    Quantity = AddOrder.Orders[i].QuantityOrder
+                };
+
+                Context.OrderDetails.Add(ord);
+
+                Context.SaveChanges();
+            }    
 
             return Ok();
         }

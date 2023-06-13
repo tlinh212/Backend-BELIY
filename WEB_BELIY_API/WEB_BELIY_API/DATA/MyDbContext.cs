@@ -30,19 +30,13 @@ namespace WEB_BELIY_API.DATA
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<OrderDetail>().HasKey(o => new { o.IDOrder, o.IDProStock });
+            modelBuilder.Entity<OrderDetail>().HasKey(o => new { o.IDOrder, o.IDProDetail });
 
             modelBuilder.Entity<OrderDetail>()
                      .HasOne<Order>(sc => sc.Order)
                      .WithMany(s => s.OrderDetails)
                      .HasForeignKey(sc => sc.IDOrder)
-                     .OnDelete((DeleteBehavior)ReferentialAction.NoAction);
-
-            modelBuilder.Entity<OrderDetail>()
-                        .HasOne<ProductStock>(sc => sc.ProductStock)
-                        .WithMany(s => s.OrderDetails)
-                        .HasForeignKey(sc => sc.IDProStock)
-                        .OnDelete((DeleteBehavior)ReferentialAction.NoAction);
+                     .OnDelete((DeleteBehavior)ReferentialAction.SetNull);
 
             base.OnModelCreating(modelBuilder);
         }

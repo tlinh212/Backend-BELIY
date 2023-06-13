@@ -22,7 +22,6 @@ namespace WEB_BELIY_API.MODEL
         public Boolean IsCharge { get; set; }
         public string NameStock { get; set; }
         public string DeliveryAddress { get; set; }
-
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }
