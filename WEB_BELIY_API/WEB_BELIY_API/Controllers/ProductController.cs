@@ -380,13 +380,7 @@ namespace WEB_BELIY_API.Controllers
         {
             try
             {
-
-
-                var review = Context.Reviews.SingleOrDefault(p => p.IDPro == dto.review.IDPro);
-
-
-
-
+                var review = Context.Reviews.SingleOrDefault(p => p.IDPro == dto.review.IDPro && p.IDUser == dto.review.IDUser);
 
                 if (review == null)
                 {
@@ -402,13 +396,6 @@ namespace WEB_BELIY_API.Controllers
                     return Ok(new { message = "Đánh giá của bạn đã được cập nhật" });
 
                 }
-
-
-
-
-
-
-
 
             } catch
             {
