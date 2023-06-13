@@ -412,20 +412,21 @@ namespace WEB_BELIY_API.Controllers
                 product.Discount = productedit.Discount;
                 product.SaleRate = productedit.SaleRate;
 
-                for (int i = 0; i < productedit.Images.Count; i++)
-                {
-                    Image image = Context.Images.Where(img => img.IDImage == productedit.Images[i].IDImg).FirstOrDefault();
-                    image.LinkImage = productedit.Images[i].Link;
-                    Context.Images.Update(image);
-                }
-
+                Context.Products.Update(product);
                 Context.SaveChanges();
 
+                //for (int i = 0; i < productedit.Images.Count; i++)
+                //{
+                //    Image image = Context.Images.Where(img => img.IDImage == productedit.Images[i].IDImg).FirstOrDefault();
+                //    image.LinkImage = productedit.Images[i].Link;
+                //    Context.Images.Update(image);
+                //    Context.SaveChanges();
+                //}
                 return Ok();
             }
-            catch
+            catch(Exception e)
             {
-                return BadRequest();
+                return BadRequest(e.Message);
             }
 
         }
