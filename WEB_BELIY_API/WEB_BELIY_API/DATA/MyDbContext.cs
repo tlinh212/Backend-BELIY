@@ -18,11 +18,7 @@ namespace WEB_BELIY_API.DATA
         public DbSet<Image> Images { get; set; }
         public DbSet<Size> Sizes { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
-        public DbSet<Stock> Stocks { get; set; }
-        public DbSet<ProductStock> ProductStocks { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<ImportBill> ImportBills { get; set; }
-        public DbSet<ImportDetail> ImportDetails { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
